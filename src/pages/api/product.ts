@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 type Data =  {
     status:boolean,
     statuscode:number,
-    data : any
+    data:any;
 }
 
 export default async function handler(
@@ -17,6 +17,7 @@ export default async function handler(
     //     data:data
     // })
     const data = await retrieveData("products")
+    console.log("respon data", data)
     
     res.status(200).json({
         status:true,

@@ -1,38 +1,39 @@
+import ProductView from "@/views/products"
 import { useRouter } from "next/router"
 import {useEffect, useState} from "react"
-// import process from "../../../"
+import  useSWR  from "swr"
 
-type productType = {
-    id:number,
-    name:string,
-    price:number,
-    size:string
-}    
+
+const fetcher = (url:string) => fetch(url).then(res => res.json()) 
+
+
+
 const ProductPage = ()=>{
-
     const [products, setProducts] = useState([])
 
-    useEffect(()=>{
-        fetch("http://localhost:3000/api/product").then((res)=>{
-            res.json().then((response)=>{
-                setProducts(response.data)
-            })
-        })
-    }, [])
+    // useEffect(()=>{
+    //     fetch("http://localhost:3000/api/product").then((res)=>{
+    //         res.json().then((response)=>{
+    //             setProducts(response.data)
+    //         })
+    //     })
+    // }, [])
+
+    const { data, error, isLoading } = useSWR('/api/product', fetcher)
+    
+    console.log("data ", data)
+    console.log("error  ", error)
+    console.log("isLoading ", isLoading)
 
     const ShowData = ()=>{
         console.log(products)
     }
 
-    console.log("api key",process.env.firebase_apiKey)
-
     return(
         <div>
             <button onClick={()=>{ShowData()}}>show data</button>
-            <h1>Product Page</h1>
-            {products.map((product:productType)=>{
-                return (<div key={product.id}>{product.name}</div>)
-            })}
+            <ProductView products={isLoading ? [] : data.data} />
+            
         </div>
     )
 }
